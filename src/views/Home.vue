@@ -1,38 +1,24 @@
 <template>
-  <div>home</div>
-  <input v-model="search" type="text" name="" id="" />
-  <p>search term: {{ search }}</p>
-  <div v-for="name in matchingNames" :key="name">
-    <p>{{ name }}</p>
+  <div class="home">
+    <h1>Home</h1>
+    <PostList :posts="posts" />
+    <button @click="showPosts = !showPosts">toggle posts</button>
   </div>
 </template>
 
 <script>
-import { computed } from "@vue/reactivity";
-import { ref, reactive, watch, watchEffect } from "vue";
+import PostList from "../components/PostList.vue";
+import getPosts from "../composables/getPosts";
 
 export default {
   name: "Home",
-  components: {},
+  components: { PostList },
   setup() {
-    const names = ref(["mario", "yoshi", "shaun", "luigi"]);
+    const { posts, error, load } = getPosts();
 
-    const search = ref("");
+    load();
 
-    const matchingNames = computed(() => {
-      return names.value.filter((name) => name.includes(search.value));
-    });
-
-    /* watch(search, () => {
-      console.log("watch function run");
-    });
-     */
-
-    watchEffect(() => {
-      console.log("watchEffect run", search.value);
-    });
-
-    return { names, search, matchingNames };
+    return { posts, error };
   },
   created() {},
   mounted() {},
